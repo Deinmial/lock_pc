@@ -23,9 +23,7 @@ BG_FILE = os.path.join(SCRIPT_DIR, 'background.png')
 IS_WINDOWS = platform.system() == 'Windows'
 
 # Каскады Хаара как запасной аэродром (При наклоне головы он умнее...)
-upperbody_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + 'haarcascade_upperbody.xml'
-)
+upperbody_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_upperbody.xml')
 
 # Блокировка экрана
 def lock_screen():
@@ -154,6 +152,8 @@ def calibrate_background(cap):
     bg = np.mean(samples, axis=0).astype(np.uint8) # Среднее арифмитическое между 10 кадрами
     cv2.imwrite(BG_FILE, bg) # Сохраняем эталон
     print(f'[calib] Эталон сохранён в {BG_FILE}')
+    print('[info] Для удачной калибровки необходим перезапуск программы')
+    print('[info] Запустите программу ещё раз с пропуском калибровки')
     return bg
 
 # Проверяем
@@ -196,7 +196,7 @@ if not cap.isOpened():
 try:
     input('[main] Enter — снять эталон пустого фона (Ctrl+C — пропустить)... ')
     bg = calibrate_background(cap)
-    print('[main] Программа запущена')
+    raise SystemExit(1)
 except KeyboardInterrupt:
     print('\n[main] Калибровка пропущена')
     print('[main] Программа запущена')
